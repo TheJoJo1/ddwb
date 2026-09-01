@@ -1,0 +1,57 @@
+# Dependencies
+/vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+storage/logs/*.log
+
+# Generated files
+storage/generated/*
+
+# Uploads (keep directory, ignore contents)
+uploads/*
+!uploads/.gitkeep
+
+# Cache
+*.cache
+
+# Composer
+composer.lock
+
+# Local configuration (keep sample)
+config/*.php
+!config/*.php.dist
+
+# Local database files
+*.sqlite
+*.db
+
+# Generated PDFs
+*.pdf
+
+# Node (should not be needed but just in case)
+node_modules/
+package-lock.json
+
+# Build artifacts
+/build/
+/dist/
+
+# Local server
+.phpunit.result.cache
+phpunit.xml

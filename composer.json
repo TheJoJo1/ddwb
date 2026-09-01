@@ -1,0 +1,32 @@
+{
+    "name": "ddwb/ddwb",
+    "description": "DingeDieWirBesitzen - Inventory Management System",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "ext-pdo": "*",
+        "ext-mbstring": "*",
+        "ext-gd": "*",
+        "ext-json": "*",
+        "ext-session": "*",
+        "endroid/qr-code": "^5.0",
+        "picqer/php-barcode-generator": "^2.4",
+        "tecnickcom/tcpdf": "^6.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "DDWB\\": "core/",
+            "DDWB\\Modules\\": "modules/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DDWB\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
+}

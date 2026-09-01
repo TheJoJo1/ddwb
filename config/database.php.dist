@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Database Configuration
+ * This file is loaded by config.php
+ * Copy to database.php if you need to override database settings separately
+ */
+
+// This file is intentionally left empty as database configuration
+// is already included in config.php.dist
+// You can create a separate database.php file if you prefer
+// to keep database settings separate from other configuration
+
+return [];

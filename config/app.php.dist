@@ -1,0 +1,54 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Application Configuration
+ * Copy this file to app.php and customize for your application
+ */
+
+return [
+    // Module configuration
+    'modules' => [
+        'users',
+        'inventory',
+        'cases',
+        'rentals',
+        'labels',
+        'maintenance',
+        'packlists',
+        'logs',
+    ],
+
+    // Route configuration
+    'routes' => [
+        'prefix' => '',
+        'middleware' => [
+            'web' => [
+                \DDWB\Middleware\SessionMiddleware::class,
+                \DDWB\Middleware\CsrfMiddleware::class,
+            ],
+            'api' => [
+                \DDWB\Middleware\ApiMiddleware::class,
+            ],
+            'auth' => [
+                \DDWB\Middleware\AuthMiddleware::class,
+            ],
+            'admin' => [
+                \DDWB\Middleware\AuthMiddleware::class,
+                \DDWB\Middleware\AdminMiddleware::class,
+            ],
+        ],
+    ],
+
+    // Default controller and action
+    'default_controller' => 'DashboardController',
+    'default_action' => 'index',
+
+    // Error handling
+    'errors' => [
+        '404' => \DDWB\Controller\ErrorController::class . '::notFound',
+        '403' => \DDWB\Controller\ErrorController::class . '::forbidden',
+        '500' => \DDWB\Controller\ErrorController::class . '::serverError',
+    ],
+];

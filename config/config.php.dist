@@ -1,0 +1,109 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * DDWB Configuration
+ * Copy this file to config.php and customize for your environment
+ */
+
+return [
+    // Application
+    'app' => [
+        'name' => 'DingeDieWirBesitzen',
+        'env' => getenv('APP_ENV') ?: 'development',
+        'debug' => (bool)(getenv('APP_DEBUG') ?: true),
+        'url' => getenv('APP_URL') ?: 'http://localhost/ddwb',
+        'timezone' => getenv('APP_TIMEZONE') ?: 'Europe/Berlin',
+    ],
+
+    // Database
+    'database' => [
+        'driver' => getenv('DB_DRIVER') ?: 'mysql',
+        'host' => getenv('DB_HOST') ?: 'localhost',
+        'port' => (int)(getenv('DB_PORT') ?: 3306),
+        'name' => getenv('DB_NAME') ?: 'ddwb',
+        'user' => getenv('DB_USER') ?: 'root',
+        'password' => getenv('DB_PASSWORD') ?: '',
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'options' => [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_STRINGIFY_FETCHES => false,
+        ],
+    ],
+
+    // Session
+    'session' => [
+        'name' => 'DDWB_SESSION',
+        'lifetime' => 7200, // 2 hours
+        'path' => '/',
+        'domain' => '',
+        'secure' => (bool)(getenv('SESSION_SECURE') ?: false),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ],
+
+    // CSRF
+    'csrf' => [
+        'token_name' => 'csrf_token',
+        'token_lifetime' => 3600, // 1 hour
+    ],
+
+    // Password
+    'password' => [
+        'algorithm' => PASSWORD_BCRYPT,
+        'options' => [
+            'cost' => 12,
+        ],
+    ],
+
+    // Pagination
+    'pagination' => [
+        'per_page' => 25,
+        'max_links' => 5,
+    ],
+
+    // QR Code
+    'qr_code' => [
+        'size' => 200,
+        'margin' => 10,
+        'foreground_color' => ['r' => 0, 'g' => 0, 'b' => 0],
+        'background_color' => ['r' => 255, 'g' => 255, 'b' => 255],
+    ],
+
+    // Barcode
+    'barcode' => [
+        'type' => 'code128',
+        'width' => 2,
+        'height' => 50,
+    ],
+
+    // Maintenance
+    'maintenance' => [
+        'upcoming_days' => 30,
+        'due_days' => 7,
+        'overdue_days' => 0,
+    ],
+
+    // Uploads
+    'uploads' => [
+        'path' => __DIR__ . '/../uploads',
+        'max_size' => 10 * 1024 * 1024, // 10MB
+        'allowed_types' => ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
+    ],
+
+    // Storage
+    'storage' => [
+        'logs' => __DIR__ . '/../storage/logs',
+        'generated' => __DIR__ . '/../storage/generated',
+    ],
+
+    // Scanner
+    'scanner' => [
+        'enabled' => true,
+        'camera_facing' => 'environment', // 'user' or 'environment'
+    ],
+];
