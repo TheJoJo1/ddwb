@@ -57,8 +57,23 @@
     <!-- JavaScript -->
     <script src="<?= asset('js/app.js') ?>"></script>
     
-    <!-- Scanner Library (loaded locally) -->
+    <!-- Scanner Library - Try local first, fallback to CDN -->
     <script src="<?= asset('js/vendor/zxing.js') ?>"></script>
+    <script>
+        // Load ZXing from CDN if not already loaded
+        if (typeof ZXing === 'undefined' || typeof ZXing.BrowserQRCodeReader === 'undefined') {
+            var zxingScript = document.createElement('script');
+            zxingScript.src = 'https://unpkg.com/@zxing/library@0.23.0/umd/index.js';
+            zxingScript.crossOrigin = 'anonymous';
+            zxingScript.onload = function() {
+                console.log('ZXing library loaded from CDN');
+            };
+            zxingScript.onerror = function() {
+                console.error('Failed to load ZXing library from CDN');
+            };
+            document.head.appendChild(zxingScript);
+        }
+    </script>
     
     <!-- Additional JavaScript -->
     <?= $scripts ?? '' ?>

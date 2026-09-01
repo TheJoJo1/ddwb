@@ -92,6 +92,13 @@ return [
         'middleware' => [SessionMiddleware::class, AuthMiddleware::class],
         'name' => 'labels.generate_pdf',
     ],
+    [
+        'method' => 'GET',
+        'path' => '/labels/preview',
+        'handler' => 'LabelsController@preview',
+        'middleware' => [SessionMiddleware::class, AuthMiddleware::class],
+        'name' => 'labels.preview',
+    ],
 
     // API routes
     [

@@ -315,10 +315,10 @@ final class LabelsController extends Controller
         try {
             $this->labelTemplateModel->deleteTemplate($templateId);
             
-            $this->addFlash('success', 'Labelvorlage erfolgreich gelöscht!');
+            $this->addFlash('success', 'Labelvorlage erfolgreich gelscht!');
             $response->redirect('/labels/templates');
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Fehler beim Löschen der Labelvorlage: ' . $e->getMessage());
+            $this->addFlash('error', 'Fehler beim Lschen der Labelvorlage: ' . $e->getMessage());
             $response->redirect("/labels/templates/{$templateId}");
         }
     }
@@ -383,7 +383,7 @@ final class LabelsController extends Controller
         $itemType = $request->getPost('item_type', 'device');
 
         if (empty($itemIds)) {
-            $this->addFlash('error', 'Bitte wählen Sie mindestens einen Artikel aus!');
+            $this->addFlash('error', 'Bitte whlen Sie mindestens einen Artikel aus!');
             $response->redirect('/labels/designer');
             return;
         }
@@ -437,7 +437,7 @@ final class LabelsController extends Controller
         }
 
         if (empty($items)) {
-            $this->addFlash('error', 'Keine gültigen Artikel gefunden!');
+            $this->addFlash('error', 'Keine gltigen Artikel gefunden!');
             $response->redirect('/labels/designer');
             return;
         }
@@ -455,6 +455,77 @@ final class LabelsController extends Controller
             // Generate PDF
             $response->redirect("/labels/generate-pdf?template_id={$templateId}&item_type={$itemType}&item_ids=" . implode(',', $itemIds));
         }
+    }
+
+    /**
+     * Show label preview
+     * 
+     * @param Request $request The HTTP request
+     * @param Response $response The HTTP response
+     */
+    public function preview(Request $request, Response $response): void
+    {
+        $templateId = (int)$request->getQuery('template_id', 0);
+        $itemIds = explode(',', $request->getQuery('item_ids', ''));
+        $itemType = $request->getQuery('item_type', 'device');
+
+        if (empty($itemIds)) {
+            $this->addFlash('error', 'Bitte wählen Sie mindestens einen Artikel aus!');
+            $response->redirect('/labels/designer');
+            return;
+        }
+
+        $template = $templateId > 0 ? $this->labelTemplateModel->getTemplateById($templateId) : null;
+        if ($template === null) {
+            $template = $this->labelTemplateModel->getDefaultTemplate($itemType);
+            if ($template === null) {
+                $this->addFlash('error', 'Keine Standard-Labelvorlage gefunden!');
+                $response->redirect('/labels/templates');
+                return;
+            }
+        }
+
+        // Get the items
+        $items = [];
+        if ($itemType === 'device') {
+            foreach ($itemIds as $id) {
+                $device = $this->deviceModel->find((int)$id);
+                if ($device !== null) {
+                    $items[] = [
+                        'type' => 'device',
+                        'id' => $device['id'],
+                        'name' => $device['name'],
+                        'internal_id' => $device['internal_id'],
+                        'serial_number' => $device['serial_number'] ?? '',
+                    ];
+                }
+            }
+        } elseif ($itemType === 'case') {
+            foreach ($itemIds as $id) {
+                $case = $this->caseModel->find((int)$id);
+                if ($case !== null) {
+                    $items[] = [
+                        'type' => 'case',
+                        'id' => $case['id'],
+                        'name' => $case['name'],
+                        'internal_id' => $case['internal_id'],
+                        'serial_number' => '',
+                    ];
+                }
+            }
+        }
+
+        if (empty($items)) {
+            $this->addFlash('error', 'Keine gültigen Artikel gefunden!');
+            $response->redirect('/labels/designer');
+            return;
+        }
+
+        $this->render('labels/preview', [
+            'template' => $template,
+            'items' => $items,
+            'itemType' => $itemType,
+        ]);
     }
 
     /**
@@ -484,14 +555,7 @@ final class LabelsController extends Controller
         }
 
         // This will be implemented with TCPDF in a later phase
-        // For now, return JSON with the data that would be used for PDF generation
-        
-        $response->json([
-            'success' => true,
-            'message' => 'PDF generation not yet implemented',
-            'template' => $template,
-            'item_ids' => $itemIds,
-            'item_type' => $itemType,
-        ]);
+        // For now, redirect to preview with autoprint
+        $response->redirect("/labels/preview?template_id={$templateId}&item_type={$itemType}&item_ids=" . implode(',', $itemIds) . '&autoprint=1');
     }
 }
