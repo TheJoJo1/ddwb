@@ -117,20 +117,23 @@ check_root() {
 
 # Detect Linux distribution
 detect_distro() {
+    DISTRO=""
+    DISTRO_VERSION=""
+    
     if [ -f /etc/os-release ]; then
         . /etc/os-release
-        DISTRO="$ID"
-        DISTRO_VERSION="$VERSION_ID"
+        DISTRO="${ID:-unknown}"
+        DISTRO_VERSION="${VERSION_ID:-unknown}"
     elif type lsb_release >/dev/null 2>&1; then
-        DISTRO=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
-        DISTRO_VERSION=$(lsb_release -sr)
+        DISTRO=$(lsb_release -si 2>/dev/null | tr '[:upper:]' '[:lower:]' || echo "unknown")
+        DISTRO_VERSION=$(lsb_release -sr 2>/dev/null || echo "unknown")
     elif [ -f /etc/lsb-release ]; then
         . /etc/lsb-release
-        DISTRO="$DISTRIB_ID"
-        DISTRO_VERSION="$DISTRIB_RELEASE"
+        DISTRO="${DISTRIB_ID:-unknown}"
+        DISTRO_VERSION="${DISTRIB_RELEASE:-unknown}"
     else
-        DISTRO=$(uname -s)
-        DISTRO_VERSION=$(uname -r)
+        DISTRO=$(uname -s 2>/dev/null || echo "unknown")
+        DISTRO_VERSION=$(uname -r 2>/dev/null || echo "unknown")
     fi
     
     echo "$DISTRO"
@@ -189,6 +192,7 @@ check_root
 # Detect distribution
 print_section "Systemprüfung"
 DISTRO=$(detect_distro)
+DISTRO_VERSION=${DISTRO_VERSION:-unknown}
 print_info "Erkannte Distribution: $DISTRO $DISTRO_VERSION"
 
 # Check for curl
